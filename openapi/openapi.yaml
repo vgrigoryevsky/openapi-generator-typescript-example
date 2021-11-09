@@ -1,0 +1,493 @@
+openapi: 3.0.3
+info:
+  title: Template RESTful API
+  version: 0.0.1
+servers:
+  - url: 'https://template.com'
+    description: Localhost
+security:
+  - JWT: []
+tags:
+  - name: Objects
+    description: Objects APIs
+paths:
+  /v1/objects:
+    get:
+      summary: Paginated list of Objects.
+      tags:
+        - Objects
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/PaginationPageQueryParameter'
+        - $ref: '#/components/parameters/PaginationPageSizeQueryParameter'
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectListResponseBody'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error403'
+    post:
+      summary: Create an Object.
+      description: Creates an Object
+      tags:
+        - Objects
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectCreateUpdateBody'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponseBody'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error403'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error409'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error429'
+  '/v1/objects/{object-id}':
+    get:
+      summary: Get a single Objects.
+      tags:
+        - Objects
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/ObjectIdPathParameter'
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponseBody'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+    put:
+      summary: Update a single Objects.
+      description: Updates an existing Objects
+      tags:
+        - Objects
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/ObjectIdPathParameter'
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectCreateUpdateBody'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectResponseBody'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error409'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422'
+        '429':
+          description: Too Many Requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error429'
+    delete:
+      summary: Delete a single Object.
+      description: Deletes an existing Object.
+      tags:
+        - Objects
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/ObjectIdPathParameter'
+      security:
+        - JWT: []
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error403'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+        '429':
+          description: Too Many Requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error429'
+components:
+  schemas:
+    ResourceId:
+      type: string
+      example: a1
+    ObjectId:
+      $ref: '#/components/schemas/ResourceId'
+    ObjectName:
+      type: string
+      example: Object Name
+    Object:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        name:
+          $ref: '#/components/schemas/ObjectName'
+      required:
+        - id
+        - name
+    ObjectCreateUpdateBody:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/ObjectName'
+      required:
+        - name
+    ObjectResponseBody:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Object'
+    ObjectListResponseBody:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Object'
+          maxItems: 100
+    ErrorObjects:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Error400'
+              - $ref: '#/components/schemas/Error401'
+              - $ref: '#/components/schemas/Error403'
+              - $ref: '#/components/schemas/Error404'
+              - $ref: '#/components/schemas/Error409'
+              - $ref: '#/components/schemas/Error422'
+              - $ref: '#/components/schemas/Error429'
+          maxItems: 1
+    BasicErrorObject:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        status:
+          type: integer
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+        code:
+          type: integer
+          description: 'An application-specific error code, expressed as a string value.'
+        title:
+          type: string
+          description: 'A short, human-readable summary of the problem.'
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        source:
+          type: string
+          description: An object containing references to the source of the error.
+    Error400:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 400
+            title:
+              example: Bad request
+    Error401:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 401
+            title:
+              example: Unauthorized
+    Error403:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 403
+            title:
+              example: Forbidden
+    Error404:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 404
+            title:
+              example: Not Found
+    Error409:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 409
+            title:
+              example: Conflict
+    Error422:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 422
+            title:
+              example: Unprocessable entity
+    Error429:
+      allOf:
+        - $ref: '#/components/schemas/BasicErrorObject'
+        - type: object
+          properties:
+            status:
+              example: 429
+            title:
+              example: Too many requests
+    pagination-meta:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          example: 200
+        from:
+          type: integer
+          minimum: 0
+          example: 1
+        to:
+          type: integer
+          minimum: 0
+          example: 20
+        path:
+          type: string
+          example: /api/some/path?pageSize=20&sortField=createdAt&sortDirection=desc&page=1
+        currentPage:
+          type: integer
+          example: 1
+        lastPage:
+          type: integer
+          example: 10
+        pageSize:
+          type: integer
+          minimum: 0
+          example: 20
+    pagination-links:
+      type: object
+      properties:
+        next:
+          type: string
+          example: /api/some/path?pageSize=20&sortField=createdAt&sortDirection=desc&page=3
+        prev:
+          type: string
+          example: /api/some/path?pageSize=20&sortField=createdAt&sortDirection=desc&page=1
+        first:
+          type: string
+          example: /api/some/path?pageSize=20&sortField=createdAt&sortDirection=desc&page=1
+        last:
+          type: string
+          example: /api/some/path?pageSize=20&sortField=createdAt&sortDirection=desc&page=5
+  parameters:
+    Accept:
+      name: Accept
+      in: header
+      description: Default accept header
+      required: false
+      schema:
+        type: string
+      example: application/json
+    PaginationPageQueryParameter:
+      name: page
+      in: query
+      description: Desired page number (defaults to 1)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+        example: 1
+    PaginationPageSizeQueryParameter:
+      name: pageSize
+      in: query
+      description: Desired number of elements per page (defaults to 20)
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+        example: 20
+    ObjectsSortByQueryParameter:
+      name: sort_by
+      in: query
+      description: Sort objects by ...
+      required: false
+      schema:
+        type: string
+        enum:
+          - createdAt
+          - modifiedAt
+        example: createdAt
+        default: createdAt
+    SearchTermQueryParameter:
+      name: search_term
+      in: query
+      description: Search term to filter by. At least 3 characters. Searches in objects' content.
+      required: false
+      schema:
+        type: string
+        example: hello world
+    ObjectIdQueryParameter:
+      name: object_id
+      in: query
+      description: '`objectId` to filter by.'
+      required: false
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+    ObjectIdPathParameter:
+      name: object-id
+      in: path
+      description: Object identifier
+      required: true
+      schema:
+        $ref: '#/components/schemas/ResourceId'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access Token
+    JWTRefresh:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Refresh Token
+
